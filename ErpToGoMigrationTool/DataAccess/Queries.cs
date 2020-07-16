@@ -13,6 +13,49 @@ namespace ErpToGoMigrationTool.DataAccess
     /// </summary>
     class Queries
     {
+        private static Queries instance;
+        /// <summary>
+        /// Función encargada de instanciar y devolver una única instancia Singleton de la clase.
+        /// </summary>
+        public static Queries GetInstance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new Queries();
+                }
+                return instance;
+            }
+        }
+        /// <summary>
+        /// Función encargada de devolver un conjunto de identificadores de empresas.
+        /// </summary>
+        /// <returns>Un único valor de identificación para cada empresa del sistema.</returns>
+        public int[] GetEmpresas()
+        {
+            DataTable queryEmpresas = TableQuery ("select distinct ArtEmpresa from Articulo;");
+            List<int> empList = new List<int>();
+            for (int i=0; i < queryEmpresas.Rows.Count; i++)
+            {
+                empList.Add(queryEmpresas.Rows[i].Field<int>(0));
+            }
+            return empList.ToArray();
+        }
+
+        /// <summary>
+        /// Función engargada de devolver la ruta base de imágenes de una empresa dada.
+        /// </summary>
+        /// <param name="EmpId">Identificador de dicha empresa.</param>
+        /// <returns>Ruta absoluta de las imágenes de artículos de dicha empresa.</returns>
+        public string GetImgBasePath(int EmpId)
+        {
+            DatabaseAccess.GetInstance.InitConnection();
+            SqlCommand query = new SqlCommand("select EmpPathImg from cceEmpresas where EmpId = " + EmpId + ";", DatabaseAccess.GetInstance.GetConnection);
+            SqlDataReader result = query.ExecuteReader();
+            return result.GetString(0);
+        }
+       
         /// <summary>
         /// Función encargada de devolver una tabla estilo "vista" con los 
         /// datos necesarios para poder instanciar los objetos de Article.
@@ -20,29 +63,31 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <param name="ArtEmpresa">Empresa a la cual se van a extraer dichos Artículos.</param>
         /// <returns>Tabla con todos los Artículos de dicha empresa, 
         /// lista para instanciar los objetos de Artículo.</returns>
-        public DataTable GetArticleData(int ArtEmpresa)
+        public DataTable GetArticleView(int EmpId)
         {
-            DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = "+ ArtEmpresa +";", DatabaseAccess.GetInstance.GetConnection);
-            SqlDataAdapter result = new SqlDataAdapter(query);
-            DataTable articles = new DataTable();
-            result.Fill(articles);
-            return articles;
+            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = " + EmpId + ";");
         }
-        public enum ArticleColumns { ArtId, ArtEmpresa, ArtFoto }
+
         /// <summary>
-        /// Función encargada de devolver un conjunto de identificadores de empresas.
+        /// Enumerador encargado de identificar las diferentes columnas de la DataTable devuelta en GetArticleData.
         /// </summary>
-        /// <returns>Un único valor de identificación para cada empresa del sistema.</returns>
-        public int[] GetEmpresas()
+        public enum ArticleColumns { EmpId = 0, ArtId = 0, ArtEmpresa, ArtFoto }
+
+        /// <summary>
+        /// Función encargada de devolver tablas provenientes de consultas SQL.
+        /// </summary>
+        /// <param name="sqlquery">Consulta SQL</param>
+        /// <returns>Tabla con los datos solicitados en la consulta.</returns>
+        private DataTable TableQuery(string sqlquery)
         {
             DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand("select distinct ArtEmpresa from Articulo;", DatabaseAccess.GetInstance.GetConnection);
+            SqlCommand query = new SqlCommand(sqlquery, DatabaseAccess.GetInstance.GetConnection);
             SqlDataAdapter result = new SqlDataAdapter(query);
-            DataTable articles = new DataTable();
-            result.Fill(articles);
-            return null;
+            DataTable toBeReturned = new DataTable();
+            result.Fill(toBeReturned);
+            return toBeReturned;
         }
+
     }
 }
 /*SqlDataReader result = query.ExecuteReader();

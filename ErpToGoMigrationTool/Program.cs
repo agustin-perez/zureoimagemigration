@@ -2,6 +2,8 @@
 using Zureo.MigrarImagenes.DataAccess;
 using System.Data;
 using System.Data.SqlClient;
+using System.Security.AccessControl;
+using ErpToGoMigrationTool.DataAccess;
 
 namespace Zureo.MigrarImagenes
 {
@@ -16,7 +18,31 @@ namespace Zureo.MigrarImagenes
             //FilesystemAccess.GetInstance.SetPath = String.Concat(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "\\test.txt");
 
         }
-
+        Testing test = new Testing();
  
+    }
+    class Testing
+    {
+        public Testing()
+        {
+            DatabaseAccess.GetInstance.InitConnection();
+            DataTable a = Queries.GetInstance.GetArticleView(25);
+            Console.WriteLine("inicio articulos");
+            foreach (DataRow tupla in a.Rows)
+            {
+                Console.WriteLine(tupla.Field<string>(0));
+            }
+            Console.WriteLine("Fin articulos");
+
+            Console.WriteLine("inicio getempresas");
+            int[] b= Queries.GetInstance.GetEmpresas();
+            for (int i=0; i<b.Length; i++)
+            {
+                Console.WriteLine(b[i]);
+            }
+            Console.WriteLine("fin getempresas");
+            Console.WriteLine("Inicio stringpath\n" + Queries.GetInstance.GetImgBasePath(b[0]) + "\nFin stringpath");
+
+        }
     }
 }
