@@ -32,13 +32,13 @@ namespace ErpToGoMigrationTool.DataAccess
         /// Función encargada de devolver un conjunto de identificadores de empresas.
         /// </summary>
         /// <returns>Un único valor de identificación para cada empresa del sistema.</returns>
-        public int[] GetEmpresas()
+        public Int16[] GetEmpresas()
         {
             DataTable queryEmpresas = TableQuery ("select distinct ArtEmpresa from Articulo;");
-            List<int> empList = new List<int>();
+            List<Int16> empList = new List<Int16>();
             for (int i=0; i < queryEmpresas.Rows.Count; i++)
             {
-                empList.Add(queryEmpresas.Rows[i].Field<int>(0));
+                empList.Add(queryEmpresas.Rows[i].Field<Int16>(0));
             }
             return empList.ToArray();
         }
@@ -50,6 +50,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>Ruta absoluta de las imágenes de artículos de dicha empresa.</returns>
         public string GetImgBasePath(int EmpId)
         {
+
             DatabaseAccess.GetInstance.InitConnection();
             SqlCommand query = new SqlCommand("select EmpPathImg from cceEmpresas where EmpId = " + EmpId + ";", DatabaseAccess.GetInstance.GetConnection);
             SqlDataReader result = query.ExecuteReader();
@@ -86,6 +87,14 @@ namespace ErpToGoMigrationTool.DataAccess
             DataTable toBeReturned = new DataTable();
             result.Fill(toBeReturned);
             return toBeReturned;
+        }
+
+        private T GenericFieldQuery<T>(string sqlquery)
+        {
+            DatabaseAccess.GetInstance.InitConnection();
+            SqlCommand query = new SqlCommand(sqlquery, DatabaseAccess.GetInstance.GetConnection);
+            SqlDataReader result = query.ExecuteReader();
+            return (T)Convert.ChangeType(result.GetValue(0), typeof(T));
         }
 
     }

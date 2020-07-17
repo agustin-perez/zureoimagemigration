@@ -16,26 +16,27 @@ namespace Zureo.MigrarImagenes
         static void Main(string[] args)
         {
             //FilesystemAccess.GetInstance.SetPath = String.Concat(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "\\test.txt");
+            Testing testA = new Testing();
 
         }
-        Testing test = new Testing();
- 
+
     }
     class Testing
     {
         public Testing()
         {
+            DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
             DatabaseAccess.GetInstance.InitConnection();
             DataTable a = Queries.GetInstance.GetArticleView(25);
             Console.WriteLine("inicio articulos");
             foreach (DataRow tupla in a.Rows)
             {
-                Console.WriteLine(tupla.Field<string>(0));
+                Console.WriteLine(tupla.ToString());
             }
             Console.WriteLine("Fin articulos");
 
             Console.WriteLine("inicio getempresas");
-            int[] b= Queries.GetInstance.GetEmpresas();
+            Int16[] b= Queries.GetInstance.GetEmpresas();
             for (int i=0; i<b.Length; i++)
             {
                 Console.WriteLine(b[i]);
