@@ -50,9 +50,8 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>Ruta absoluta de las imágenes de artículos de dicha empresa.</returns>
         public string GetImgBasePath(int EmpId)
         {
-
             DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand("select EmpPathImg from cceEmpresas where EmpId = " + EmpId + ";", DatabaseAccess.GetInstance.GetConnection);
+            SqlCommand query = new SqlCommand("select EmpPathImg from cceEmpresas where EmpId = '" + EmpId + "';", DatabaseAccess.GetInstance.GetConnection);
             SqlDataReader result = query.ExecuteReader();
             return result.GetString(0);
         }
@@ -66,7 +65,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// lista para instanciar los objetos de Artículo.</returns>
         public DataTable GetArticleView(int EmpId)
         {
-            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = " + EmpId + ";");
+            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' AND ArtFoto is not nul;");
         }
 
         /// <summary>
@@ -88,7 +87,12 @@ namespace ErpToGoMigrationTool.DataAccess
             result.Fill(toBeReturned);
             return toBeReturned;
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sqlquery"></param>
+        /// <returns></returns>
         private T GenericFieldQuery<T>(string sqlquery)
         {
             DatabaseAccess.GetInstance.InitConnection();
@@ -98,6 +102,9 @@ namespace ErpToGoMigrationTool.DataAccess
         }
 
     }
+
+
+
 }
 /*SqlDataReader result = query.ExecuteReader();
            List<String> paths = new List<string>();

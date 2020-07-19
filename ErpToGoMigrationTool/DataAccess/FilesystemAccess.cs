@@ -41,8 +41,6 @@ namespace Zureo.MigrarImagenes.DataAccess
             System.Console.Read();
             ZUtilities.LogEnDisco("ErrorLog.txt", Trace, Error);
             */
-
-
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Zureo.MigrarImagenes
             Console.WriteLine("inicio articulos");
             foreach (DataRow tupla in a.Rows)
             {
-                Console.WriteLine(tupla.ToString());
+                Console.WriteLine(tupla.Field<int>(0) + tupla.Field<string>(1));
             }
             Console.WriteLine("Fin articulos");
 
