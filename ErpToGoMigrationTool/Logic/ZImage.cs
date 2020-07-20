@@ -7,9 +7,12 @@ using System.Drawing.Imaging;
 
 namespace Zureo.MigrarImagenes.Logic
 {
+    /// <summary>
+    /// Clase encargada de manejar una imagen dada, correspondiente a un ZArticle.
+    /// </summary>
     class ZImage
     {
-        private Guid guidObj = Guid.NewGuid();
+        private Guid guidObj = System.Guid.NewGuid();
         private string guid;
         private Bitmap Imagen;
         private ImageFormat FinalEncoder = ImageFormat.Jpeg;
@@ -24,9 +27,8 @@ namespace Zureo.MigrarImagenes.Logic
         {
             guid = guidObj.ToString();
             this.Imagen = Imagen;
-            //GUID
-            //CompressionParams(Imagen);
-            Console.WriteLine(guid); 
+            CompressionParams(Imagen);
+            Console.WriteLine(Guid); 
         }
 
         /// <summary>
@@ -48,9 +50,10 @@ namespace Zureo.MigrarImagenes.Logic
             EncoderParameter JPEGEncoderParam = new EncoderParameter(JPEGEncoder, 50L);
             JPEGEncoderParams.Param[0] = JPEGEncoderParam;
         }
+
+        /// <summary>
+        /// Getter de guid.
+        /// </summary>
+        public string Guid { get => guid; }
     }
 }
-
-
-
-//Nota: luego de tener las funciones para obtener las imagenes, tengo que testear un compresor para png, en caso de que lo soporte

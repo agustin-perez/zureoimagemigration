@@ -22,17 +22,12 @@ namespace Zureo.MigrarImagenes.DataAccess
                 return instance;
             }
         }
-        public string SetPath
-        {
-            set
-            {
-                logpath = value;
-            }
-        }
+
         public void LogInfo(string Info)
         {
 
         }
+
         public void LogError(string Error, MethodBase Trace)
         {
             /*ZUtilities.LogEnDiscoPath = logpath;
@@ -42,5 +37,10 @@ namespace Zureo.MigrarImagenes.DataAccess
             ZUtilities.LogEnDisco("ErrorLog.txt", Trace, Error);
             */
         }
+
+        /// <summary>
+        /// Setter de logpath.
+        /// </summary>
+        public string SetPath { set => logpath = value; }
     }
 }

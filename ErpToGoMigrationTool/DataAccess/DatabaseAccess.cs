@@ -33,18 +33,18 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// <summary>
         /// Constructor por defecto de la clase.
         /// </summary>
-        private DatabaseAccess(){}
+        private DatabaseAccess() { }
 
         /// <summary>
         /// Clase encargada de inicializar la conexión en la instancia Singleton a la BD.
         /// </summary>
         public void InitConnection()
         {
-           try
-           {
-                if (Connection == null){ Connection = new SqlConnection(connectionString); }
+            try
+            {
+                if (Connection == null) { Connection = new SqlConnection(connectionString); }
                 if (Connection.State != ConnectionState.Open) { Connection.Open(); }
-           }
+            }
             catch (Exception e)
             {
                 FilesystemAccess.GetInstance.LogError("Error al conectar a la base de datos.", MethodBase.GetCurrentMethod());
@@ -59,29 +59,17 @@ namespace Zureo.MigrarImagenes.DataAccess
         public void CloseConnection()
         {
             //Se chequea la conexión para evitar excepción en caso de que el objeto haya sido desechado.
-            if ( Connection.State != ConnectionState.Open ) { Connection.Close(); }
+            if (Connection.State != ConnectionState.Open) { Connection.Close(); }
         }
 
         /// <summary>
         /// Setter de ConnectionString.
         /// </summary>
-        public String ConnectionString
-        {
-            set
-            {
-                connectionString = value;
-            }
-        }
+        public String ConnectionString { set => connectionString = value; }
 
         /// <summary>
         /// Getter de Connection.
         /// </summary>
-        public SqlConnection GetConnection
-        {
-            get
-            {
-                return Connection;
-            }
-        }
+        public SqlConnection GetConnection { get => Connection; } 
     }
 }

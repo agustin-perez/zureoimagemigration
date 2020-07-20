@@ -73,7 +73,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <summary>
         /// Función encargada de devolver tablas provenientes de consultas SQL.
         /// </summary>
-        /// <param name="sqlquery">Consulta SQL</param>
+        /// <param name="sqlquery">Consulta SQL.</param>
         /// <returns>Tabla con los datos solicitados en la consulta.</returns>
         private DataTable TableQuery(string sqlquery)
         {
@@ -86,11 +86,11 @@ namespace ErpToGoMigrationTool.DataAccess
         }
 
         /// <summary>
-        /// 
+        /// Función genérica para obtener consultas de un solo campo.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sqlquery"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Tipo de dato a obtener.</typeparam>
+        /// <param name="sqlquery">Consulta SQL.</param>
+        /// <returns>Dato devuelto, convertido al tipo especificado en la función.</returns>
         private T GenericFieldQuery<T>(string sqlquery)
         {
             DatabaseAccess.GetInstance.InitConnection();
