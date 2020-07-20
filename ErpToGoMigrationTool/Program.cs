@@ -4,6 +4,8 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Security.AccessControl;
 using ErpToGoMigrationTool.DataAccess;
+using System.Drawing;
+using Zureo.MigrarImagenes.Logic;
 
 namespace Zureo.MigrarImagenes
 {
@@ -43,6 +45,11 @@ namespace Zureo.MigrarImagenes
             }
             Console.WriteLine("fin getempresas");
             Console.WriteLine("Inicio stringpath\n" + Queries.GetInstance.GetImgBasePath(b[0]) + "\nFin stringpath");
+            Console.ReadLine();
+
+            ZImage testimg = new ZImage(null);
+            Console.ReadLine();
+
 
         }
     }

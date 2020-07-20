@@ -34,9 +34,9 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>Un único valor de identificación para cada empresa del sistema.</returns>
         public Int16[] GetEmpresas()
         {
-            DataTable queryEmpresas = TableQuery ("select distinct ArtEmpresa from Articulo;");
+            DataTable queryEmpresas = TableQuery("select distinct ArtEmpresa from Articulo;");
             List<Int16> empList = new List<Int16>();
-            for (int i=0; i < queryEmpresas.Rows.Count; i++)
+            for (int i = 0; i < queryEmpresas.Rows.Count; i++)
             {
                 empList.Add(queryEmpresas.Rows[i].Field<Int16>(0));
             }
@@ -50,12 +50,9 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>Ruta absoluta de las imágenes de artículos de dicha empresa.</returns>
         public string GetImgBasePath(int EmpId)
         {
-            DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand("select EmpPathImg from cceEmpresas where EmpId = '" + EmpId + "';", DatabaseAccess.GetInstance.GetConnection);
-            SqlDataReader result = query.ExecuteReader();
-            return result.GetString(0);
+            return GenericFieldQuery<String>("select EmpPathImg from cceEmpresas where EmpId = '" + EmpId + "';");
         }
-       
+
         /// <summary>
         /// Función encargada de devolver una tabla estilo "vista" con los 
         /// datos necesarios para poder instanciar los objetos de Article.
@@ -65,7 +62,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// lista para instanciar los objetos de Artículo.</returns>
         public DataTable GetArticleView(int EmpId)
         {
-            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' AND ArtFoto is not nul;");
+            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' AND ArtFoto is not null;");
         }
 
         /// <summary>
@@ -87,6 +84,7 @@ namespace ErpToGoMigrationTool.DataAccess
             result.Fill(toBeReturned);
             return toBeReturned;
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -97,19 +95,12 @@ namespace ErpToGoMigrationTool.DataAccess
         {
             DatabaseAccess.GetInstance.InitConnection();
             SqlCommand query = new SqlCommand(sqlquery, DatabaseAccess.GetInstance.GetConnection);
-            SqlDataReader result = query.ExecuteReader();
-            return (T)Convert.ChangeType(result.GetValue(0), typeof(T));
+            object result = query.ExecuteScalar();
+            if (result.GetType() != typeof(DBNull))
+            {
+               return (T)Convert.ChangeType(result, typeof(T));
+            }
+            return default(T);
         }
-
     }
-
-
-
 }
-/*SqlDataReader result = query.ExecuteReader();
-           List<String> paths = new List<string>();
-           while (result.Read())
-           {
-               paths.Add(result.GetString(0));
-           }
-           return paths;*/

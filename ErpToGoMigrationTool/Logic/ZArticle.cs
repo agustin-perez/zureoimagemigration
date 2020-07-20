@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Zureo.MigrarImagenes.Logic
 {
-    class Article
+    class ZArticle
     {
     }
 }

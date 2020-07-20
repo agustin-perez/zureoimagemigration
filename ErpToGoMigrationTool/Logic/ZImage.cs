@@ -7,9 +7,10 @@ using System.Drawing.Imaging;
 
 namespace Zureo.MigrarImagenes.Logic
 {
-    class Image
+    class ZImage
     {
-        private String Guid;
+        private Guid guidObj = Guid.NewGuid();
+        private string guid;
         private Bitmap Imagen;
         private ImageFormat FinalEncoder = ImageFormat.Jpeg;
         private EncoderParameters JPEGEncoderParams;
@@ -19,11 +20,13 @@ namespace Zureo.MigrarImagenes.Logic
         /// Constructor por defecto de la clase.
         /// </summary>
         /// <param name="Imagen">Imagen correspondiente a la instancia del objeto.</param>
-        public Image(Bitmap Imagen)
+        public ZImage(Bitmap Imagen)
         {
+            guid = guidObj.ToString();
             this.Imagen = Imagen;
             //GUID
-            CompressionParams(Imagen);
+            //CompressionParams(Imagen);
+            Console.WriteLine(guid); 
         }
 
         /// <summary>
