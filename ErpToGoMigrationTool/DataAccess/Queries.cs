@@ -60,15 +60,27 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <param name="ArtEmpresa">Empresa a la cual se van a extraer dichos Artículos.</param>
         /// <returns>Tabla con todos los Artículos de dicha empresa, 
         /// lista para instanciar los objetos de Artículo.</returns>
-        public DataTable GetArticleView(int EmpId)
+        public DataTable GetArticleView()
         {
-            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' AND ArtFoto is not null;");
+            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and ArtFoto is not null;");
+        }
+
+        /// <summary>
+        /// Función encargada de devolver una tabla estilo "vista" con los 
+        /// datos necesarios para poder instanciar los objetos de Article basados en una empresa particular.
+        /// </summary>
+        /// <param name="ArtEmpresa">Empresa a la cual se van a extraer dichos Artículos.</param>
+        /// <returns>Tabla con todos los Artículos de dicha empresa, 
+        /// lista para instanciar los objetos de Artículo.</returns>
+        public DataTable GetArticleEmpView(int EmpId)
+        {
+            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' and ArtFoto is not null;");
         }
 
         /// <summary>
         /// Enumerador encargado de identificar las diferentes columnas de la DataTable devuelta en GetArticleData.
         /// </summary>
-        public enum ArticleColumns { EmpId = 0, ArtId = 0, ArtEmpresa, ArtFoto }
+        public enum ArticleColumns { EmpId = 0, ArtId = 0, ArtEmpresa = 1 , ArtFoto = 2 }
 
         /// <summary>
         /// Función encargada de devolver tablas provenientes de consultas SQL.

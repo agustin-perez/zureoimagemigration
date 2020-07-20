@@ -6,6 +6,9 @@ using System.Security.AccessControl;
 using ErpToGoMigrationTool.DataAccess;
 using System.Drawing;
 using Zureo.MigrarImagenes.Logic;
+using System.Drawing.Text;
+using System.Collections.Generic;
+using System.Data.SqlTypes;
 
 namespace Zureo.MigrarImagenes
 {
@@ -16,20 +19,49 @@ namespace Zureo.MigrarImagenes
         /// </summary>
         /// <param name="args">No utilizado.</param>
         static void Main(string[] args)
-        {
+        { 
+            //Get startup path para logs
+            DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
+            DatabaseAccess.GetInstance.InitConnection();
+            Int16[] Empresas = Queries.GetInstance.GetEmpresas();
+            DataTable ArticleView = new DataTable();
+            ArticleView = Queries.GetInstance.GetArticleView();
+            List<ZArticle> ArticleList = new List<ZArticle>();
+            foreach (DataRow row in ArticleView.Rows)
+            {
+                int a = (int)Queries.ArticleColumns.ArtEmpresa;
+                Console.WriteLine(row.Field<string>(1).ToString());
+                ArticleList.Add(new ZArticle(row.Field<int>((int) Queries.ArticleColumns.ArtId), row.Field<Int16>((int) Queries.ArticleColumns.ArtEmpresa), null));
+            }
+            Console.ReadLine();
+
+
+
+
+
+
+
             //FilesystemAccess.GetInstance.SetPath = String.Concat(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "\\test.txt");
             Testing testA = new Testing();
 
         }
 
     }
+
+
+
+
+
+
+
+
     class Testing
     {
         public Testing()
         {
             DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
             DatabaseAccess.GetInstance.InitConnection();
-            DataTable a = Queries.GetInstance.GetArticleView(25);
+            DataTable a = Queries.GetInstance.GetArticleEmpView(25);
             Console.WriteLine("inicio articulos");
             foreach (DataRow tupla in a.Rows)
             {

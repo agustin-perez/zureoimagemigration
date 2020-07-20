@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -26,6 +27,16 @@ namespace Zureo.MigrarImagenes.DataAccess
         public void LogInfo(string Info)
         {
 
+        }
+
+        /// <summary>
+        /// Función encargada de devolver un nuevo Bitmap basado en una ruta del sistema de archivos.
+        /// </summary>
+        /// <param name="path">Ruta absoluta al archivo de imagen.</param>
+        /// <returns>Bitmap con la imagen cargada.</returns>
+        public Bitmap GetDiskImage(string path)
+        {
+            return new Bitmap(path);
         }
 
         public void LogError(string Error, MethodBase Trace)
