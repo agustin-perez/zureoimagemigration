@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Odbc;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using Zureo.MigrarImagenes.DataAccess;
@@ -28,13 +30,37 @@ namespace ErpToGoMigrationTool.DataAccess
                 return instance;
             }
         }
+
+        /// <summary>
+        /// Subrutina encargada de chequear si existe la tabla "Imagenes" para proceder a su creación.
+        /// Esta subrutina es útil si la base no fue actualizada.
+        /// </summary>
+        public void CheckImagenesTable()
+        {
+            if (DatabaseAccess.GetInstance.GenericFieldQuery<string>("select TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_NAME = N'Imagenes'") == null)
+            {
+                Console.WriteLine(DatabaseAccess.GetInstance.GenericFieldQuery<string>("CREATE TABLE [dbo].[Imagenes]("
+                    + "[ImgId][uniqueidentifier] NOT NULL,"
+                    + "[ImgTipoDato][tinyint] NULL,"
+                    + "[ImgIdDato][int] NULL,"
+                    + "[ImgIdVarianteDato][int] NULL,"
+                    + "[ImgTipoImagen][tinyint] NULL,"
+                    + "[ImgDescripcion][nvarchar](60) NULL,"
+                    + "[ImgFechaModificacion][smalldatetime] NULL,"
+                    + "CONSTRAINT[PK_Imagenes] PRIMARY KEY CLUSTERED"
+                    + "("
+                    + "    [ImgId] ASC"
+                    + ") WITH(PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, FILLFACTOR = 90) ON[PRIMARY]) ON[PRIMARY]"));
+            }
+        }
+
         /// <summary>
         /// Función encargada de devolver un conjunto de identificadores de empresas.
         /// </summary>
         /// <returns>Un único valor de identificación para cada empresa del sistema.</returns>
         public Int16[] GetEmpresas()
         {
-            DataTable queryEmpresas = TableQuery("select distinct ArtEmpresa from Articulo;");
+            DataTable queryEmpresas = DatabaseAccess.GetInstance.TableQuery("select distinct ArtEmpresa from Articulo;");
             List<Int16> empList = new List<Int16>();
             for (int i = 0; i < queryEmpresas.Rows.Count; i++)
             {
@@ -50,7 +76,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>Ruta absoluta de las imágenes de artículos de dicha empresa.</returns>
         public string GetImgBasePath(int EmpId)
         {
-            return GenericFieldQuery<String>("select EmpPathImg from cceEmpresas where EmpId = '" + EmpId + "';");
+            return DatabaseAccess.GetInstance.GenericFieldQuery<String>("select EmpPathImg from cceEmpresas where EmpId = '" + EmpId + "';");
         }
 
         /// <summary>
@@ -62,7 +88,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// lista para instanciar los objetos de Artículo.</returns>
         public DataTable GetArticleView()
         {
-            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and ArtFoto is not null;");
+            return DatabaseAccess.GetInstance.TableQuery("select ArtId, ArtEmpresa, ArtFoto from Articulo where ArtFoto is not null;");
         }
 
         /// <summary>
@@ -74,45 +100,25 @@ namespace ErpToGoMigrationTool.DataAccess
         /// lista para instanciar los objetos de Artículo.</returns>
         public DataTable GetArticleEmpView(int EmpId)
         {
-            return TableQuery("select ArtId, ArtFoto from Articulo, Imagenes where articulo.ArtID != Imagenes.ImgIdDato and Articulo.ArtEmpresa = '" + EmpId + "' and ArtFoto is not null;");
+            return DatabaseAccess.GetInstance.TableQuery("select ArtId, ArtEmpresa, ArtFoto from Articulo where Articulo.ArtEmpresa = '" + EmpId + "' and ArtFoto is not null;");
+        }
+
+        /// <summary>
+        /// Subrutina encargada de insertar una imagen a la BD.
+        /// </summary>
+        /// <param name="ImgID">GUID de la imagen.</param>
+        /// <param name="ImgIdDato">ArtId de la imagen.</param>
+        public void ImageInsert(Guid ImgID, int ImgIdDato)
+        {
+            List<SqlParameter> InsertList = new List<SqlParameter>();
+            InsertList.Add(new SqlParameter("@ImgID", ImgID));
+            InsertList.Add(new SqlParameter("@ImgIdDato", ImgIdDato));
+            DatabaseAccess.GetInstance.InsertByParams("insert into Imagenes (ImgId, ImgTipoDato, ImgIdDato, ImgIdVarianteDato, ImgTipoImagen, ImgDescripcion, ImgFechaModificacion) values (@ImgID, 1, @ImgIdDato, 1, 1, 'Principal', GETDATE());", InsertList);
         }
 
         /// <summary>
         /// Enumerador encargado de identificar las diferentes columnas de la DataTable devuelta en GetArticleData.
         /// </summary>
-        public enum ArticleColumns { EmpId = 0, ArtId = 0, ArtEmpresa = 1 , ArtFoto = 2 }
-
-        /// <summary>
-        /// Función encargada de devolver tablas provenientes de consultas SQL.
-        /// </summary>
-        /// <param name="sqlquery">Consulta SQL.</param>
-        /// <returns>Tabla con los datos solicitados en la consulta.</returns>
-        private DataTable TableQuery(string sqlquery)
-        {
-            DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand(sqlquery, DatabaseAccess.GetInstance.GetConnection);
-            SqlDataAdapter result = new SqlDataAdapter(query);
-            DataTable toBeReturned = new DataTable();
-            result.Fill(toBeReturned);
-            return toBeReturned;
-        }
-
-        /// <summary>
-        /// Función genérica para obtener consultas de un solo campo.
-        /// </summary>
-        /// <typeparam name="T">Tipo de dato a obtener.</typeparam>
-        /// <param name="sqlquery">Consulta SQL.</param>
-        /// <returns>Dato devuelto, convertido al tipo especificado en la función.</returns>
-        private T GenericFieldQuery<T>(string sqlquery)
-        {
-            DatabaseAccess.GetInstance.InitConnection();
-            SqlCommand query = new SqlCommand(sqlquery, DatabaseAccess.GetInstance.GetConnection);
-            object result = query.ExecuteScalar();
-            if (result.GetType() != typeof(DBNull))
-            {
-               return (T)Convert.ChangeType(result, typeof(T));
-            }
-            return default(T);
-        }
+        public enum ArticleColumns { EmpId = 0, ArtId = 0, ArtEmpresa, ArtFoto }
     }
 }

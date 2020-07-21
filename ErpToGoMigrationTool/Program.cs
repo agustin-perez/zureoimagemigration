@@ -19,33 +19,55 @@ namespace Zureo.MigrarImagenes
         /// </summary>
         /// <param name="args">No utilizado.</param>
         static void Main(string[] args)
-        { 
+        {
             //Get startup path para logs
+            FilesystemAccess.GetInstance.SetPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
             DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
             DatabaseAccess.GetInstance.InitConnection();
+            Queries.GetInstance.CheckImagenesTable();
             Int16[] Empresas = Queries.GetInstance.GetEmpresas();
-            DataTable ArticleView = new DataTable();
-            ArticleView = Queries.GetInstance.GetArticleView();
-            List<ZArticle> ArticleList = new List<ZArticle>();
-            foreach (DataRow row in ArticleView.Rows)
+
+            //Referencia de la clase para evitar el uso de métodos estáticos.
+            Program reference = new Program();
+            
+            for (int i = 0; i<Empresas.Length; i++)
             {
-                int a = (int)Queries.ArticleColumns.ArtEmpresa;
-                Console.WriteLine(row.Field<string>(1).ToString());
-                ArticleList.Add(new ZArticle(row.Field<int>((int) Queries.ArticleColumns.ArtId), row.Field<Int16>((int) Queries.ArticleColumns.ArtEmpresa), null));
+                Console.WriteLine(Empresas[i]);
+                reference.Migration(Empresas[i]);
             }
+
+
+            Queries.GetInstance.ImageInsert(new Guid(), 2);
+
             Console.ReadLine();
 
 
 
-
-
-
-
-            //FilesystemAccess.GetInstance.SetPath = String.Concat(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), "\\test.txt");
-            Testing testA = new Testing();
+            
+            //Testing testA = new Testing();
 
         }
 
+        public void Migration(int ArtEmpresa)
+        {
+            string EmpPathImg = Queries.GetInstance.GetImgBasePath(ArtEmpresa);
+            DataTable ArticleView = new DataTable();
+            ArticleView = Queries.GetInstance.GetArticleEmpView(ArtEmpresa);
+            List<ZArticle> ArticleList = new List<ZArticle>();
+
+            foreach (DataRow row in ArticleView.Rows)
+            {
+                Console.WriteLine(row.ToString());
+                ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), null));
+            }
+            Console.WriteLine(EmpPathImg);
+            foreach (ZArticle art in ArticleList)
+            {
+                Console.WriteLine(art.ToString());
+                Console.WriteLine(art.artID.ToString() + art.artEmpresa);
+            }
+            
+        }
     }
 
 

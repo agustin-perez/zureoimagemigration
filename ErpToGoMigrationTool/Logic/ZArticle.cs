@@ -25,11 +25,11 @@ namespace Zureo.MigrarImagenes.Logic
         /// <summary>
         /// Getter de ArtEmpresa.
         /// </summary>
-        public short artEmpresa1 { get => ArtEmpresa;  }
+        public short artEmpresa { get => ArtEmpresa;  }
 
         /// <summary>
         /// Getter de ArtImg.
         /// </summary>
-        internal ZImage artImg1 { get => ArtImg; }
+        internal ZImage artImg { get => ArtImg; }
     }
 }
