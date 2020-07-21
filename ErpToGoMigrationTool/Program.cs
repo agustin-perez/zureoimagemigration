@@ -66,7 +66,7 @@ namespace Zureo.MigrarImagenes
                         }
                         else
                         {
-                            FilesystemAccess.GetInstance.LogToDisk("No se guardó la imagen del artículo: " + articulo.artID + " ya que la misma ya fue migrada. ", FilesystemAccess.Logtype.Warning);
+                            FilesystemAccess.GetInstance.LogToDisk("No se guardó la imagen del artículo: " + articulo.artID + " ya que la misma fue migrada anteriormente. ", FilesystemAccess.Logtype.Warning);
                         }
                     }
                     FilesystemAccess.GetInstance.LogToDisk("Fin de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
@@ -107,7 +107,7 @@ namespace Zureo.MigrarImagenes
 
                     if (!System.IO.Path.IsPathRooted(row.Field<string>((int)Queries.ArticleColumns.ArtFoto)))
                     {
-                        imgpath = EmpPathImg + new Bitmap(row.Field<string>((int)Queries.ArticleColumns.ArtFoto));
+                        imgpath = EmpPathImg + row.Field<string>((int)Queries.ArticleColumns.ArtFoto);
                     }
                     ZImage newImage = new ZImage(new Bitmap(imgpath));
                     ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage));
