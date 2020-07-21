@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
@@ -77,8 +78,9 @@ namespace Zureo.MigrarImagenes
             }
 
             FilesystemAccess.GetInstance.LogToDisk("Fin de migración a GO", FilesystemAccess.Logtype.Info);
-            Console.WriteLine("\nPresione enter para salir.");
+            Console.WriteLine("\nPresione enter para salir y abrir la carpeta con las imágenes exportadas.");
             Console.ReadLine();
+            Process.Start("explorer.exe", FilesystemAccess.GetInstance.GetExportPath);
         }
 
         /// <summary>
