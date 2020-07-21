@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Odbc;
 using System.Data.SqlClient;
-using System.Data.SqlTypes;
-using System.Linq;
-using System.Text;
 using Zureo.MigrarImagenes.DataAccess;
 
 namespace ErpToGoMigrationTool.DataAccess

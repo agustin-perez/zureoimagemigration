@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace Zureo.MigrarImagenes.DataAccess
 {
@@ -48,7 +46,7 @@ namespace Zureo.MigrarImagenes.DataAccess
             }
             catch (Exception e)
             {
-                FilesystemAccess.GetInstance.LogError("Error al conectar a la base de datos.", MethodBase.GetCurrentMethod());
+               // FilesystemAccess.GetInstance.LogError("Error al conectar a la base de datos.", MethodBase.GetCurrentMethod());
                 Console.WriteLine(e.StackTrace);
                 Console.Read();
             }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 
@@ -28,7 +25,6 @@ namespace Zureo.MigrarImagenes.Logic
             guid = guidObj.ToString();
             this.Imagen = Imagen;
             CompressionParams(Imagen);
-            Console.WriteLine(Guid); 
         }
 
         /// <summary>
