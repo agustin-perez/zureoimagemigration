@@ -1,0 +1,8 @@
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Release\ErpToGoMigrationTool.exe
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Release\ErpToGoMigrationTool.pdb
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Release\ZureoUtilidades.dll
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Release\ErpToGoMigrationTool.csprojAssemblyReference.cache
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Release\ErpToGoMigrationTool.csproj.CoreCompileInputs.cache
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Release\ErpToGoMigrationTool.csproj.CopyComplete
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Release\ErpToGoMigrationTool.exe
+C:\Users\Agustín Pérez\Desktop\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Release\ErpToGoMigrationTool.pdb

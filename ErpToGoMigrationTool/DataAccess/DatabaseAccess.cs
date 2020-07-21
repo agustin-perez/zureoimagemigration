@@ -111,7 +111,6 @@ namespace Zureo.MigrarImagenes.DataAccess
             query.ExecuteNonQuery();
         }
 
-
         /// <summary>
         /// Setter de ConnectionString.
         /// </summary>

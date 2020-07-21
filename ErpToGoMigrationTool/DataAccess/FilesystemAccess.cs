@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Reflection;
 
 namespace Zureo.MigrarImagenes.DataAccess
@@ -10,7 +12,8 @@ namespace Zureo.MigrarImagenes.DataAccess
     class FilesystemAccess
     {
         private static FilesystemAccess instance;
-        private static String logpath;
+        private static string logpath;
+        private static string exportPath;
 
         /// <summary>
         /// Función encargada de instanciar y devolver una única instancia Singleton de la clase.
@@ -38,6 +41,28 @@ namespace Zureo.MigrarImagenes.DataAccess
         }
 
         /// <summary>
+        /// Subrutina encargada de crear directorio donde se van a exportar las imágenes.
+        /// </summary>
+        /// <param name="path">Ruta absoluta al directorio.</param>
+        public void CreateExportDir(string path)
+        {
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            exportPath = path;
+        }
+
+        /// <summary>
+        /// Subrutina encargada de escribir la imagen optimizada en disco.
+        /// </summary>
+        /// <param name="path">Ruta absoluta de la imagen a guardar.</param>
+        public void WriteJPEG(Bitmap imagen, string path, ImageCodecInfo JPEGCodec, EncoderParameters JPEGEncoderParams)
+        {
+            imagen.Save(path, JPEGCodec, JPEGEncoderParams);
+        }
+
+        /// <summary>
         /// Subrutina encargada de loggear la información solicitada de un evento a disco.
         /// </summary>
         /// <param name="msj">Mensaje del evento a loggear.</param>
@@ -48,13 +73,15 @@ namespace Zureo.MigrarImagenes.DataAccess
             string logformat;
             if (trace != null) 
             { 
-                logformat = ("\r\n" + System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\" En: \"" + trace.ToString() + "\""); 
+                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\" En: \"" + trace.ToString() + "\""+"\r\n");
+                Console.WriteLine("[" + type.ToString() + "]: \"" + msj + "\" En: \"" + trace.ToString() + "\"" + "\r\n");
             }
             else 
             { 
-                logformat = ("\r\n" + System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\""); 
+                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\""+"\r\n");
+                Console.WriteLine("[" + type.ToString() + "]: \"" + msj + "\"" + "\r\n");
             }
-            System.IO.File.AppendAllText(logpath + "\\ErpToGoLog.txt", logformat);
+            System.IO.File.AppendAllText(logpath + "\\logs.txt", logformat);
         }
 
         /// <summary>
@@ -70,6 +97,11 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// <summary>
         /// Setter de logpath.
         /// </summary>
-        public string SetPath { set => logpath = value; }
+        public string SetExecutionPath { set => logpath = value; }
+
+        /// <summary>
+        /// Getter de ExportPath
+        /// </summary>
+        public string GetExportPath { get => exportPath; }
     }
 }

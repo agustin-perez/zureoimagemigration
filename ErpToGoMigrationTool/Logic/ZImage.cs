@@ -10,7 +10,6 @@ namespace Zureo.MigrarImagenes.Logic
     class ZImage
     {
         private Guid guidObj = System.Guid.NewGuid();
-        private string guid;
         private Bitmap Imagen;
         private ImageFormat FinalEncoder = ImageFormat.Jpeg;
         private EncoderParameters JPEGEncoderParams;
@@ -22,16 +21,15 @@ namespace Zureo.MigrarImagenes.Logic
         /// <param name="Imagen">Imagen correspondiente a la instancia del objeto.</param>
         public ZImage(Bitmap Imagen)
         {
-            guid = guidObj.ToString();
             this.Imagen = Imagen;
-            CompressionParams(Imagen);
+            CompressionParams();
         }
 
         /// <summary>
-        /// Función la cual obtiene los parámetros de guardado de cualquier imagen soportada, para que la misma sea encodeada a JPEG y con una compresión del 50%.
+        /// Función la cual obtiene los parámetros de guardado de cualquier imagen soportada, para que la misma sea encodeada a JPEG y con una compresión del 35%.
         /// </summary>
         /// <param name="Imagen">Imagen a obtener los parámetros.</param>
-        private void CompressionParams(Bitmap Imagen)
+        private void CompressionParams()
         {
             ImageCodecInfo[] codecArr = ImageCodecInfo.GetImageDecoders();
             foreach (ImageCodecInfo codec in codecArr)
@@ -43,13 +41,28 @@ namespace Zureo.MigrarImagenes.Logic
             }
             System.Drawing.Imaging.Encoder JPEGEncoder = System.Drawing.Imaging.Encoder.Quality;
             JPEGEncoderParams = new EncoderParameters(1);
-            EncoderParameter JPEGEncoderParam = new EncoderParameter(JPEGEncoder, 50L);
+            EncoderParameter JPEGEncoderParam = new EncoderParameter(JPEGEncoder, 65L);
             JPEGEncoderParams.Param[0] = JPEGEncoderParam;
         }
 
         /// <summary>
         /// Getter de guid.
         /// </summary>
-        public string Guid { get => guid; }
+        public Guid GetGuid { get => guidObj; }
+
+        /// <summary>
+        /// Getter de JPEGEncoderParams
+        /// </summary>
+        public EncoderParameters GetJPEGEncoderParams { get => JPEGEncoderParams; }
+
+        /// <summary>
+        /// Getter de JPEGCodec
+        /// </summary>
+        public ImageCodecInfo GetJPEGCodec { get => JPEGCodec; }
+
+        /// <summary>
+        /// Getter de Imagen
+        /// </summary>
+        public Bitmap GetImagen { get => Imagen; }
     }
 }

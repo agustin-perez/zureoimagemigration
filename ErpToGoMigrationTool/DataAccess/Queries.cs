@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using Zureo.MigrarImagenes.DataAccess;
@@ -110,6 +111,23 @@ namespace ErpToGoMigrationTool.DataAccess
             InsertList.Add(new SqlParameter("@ImgID", ImgID));
             InsertList.Add(new SqlParameter("@ImgIdDato", ImgIdDato));
             DatabaseAccess.GetInstance.InsertByParams("insert into Imagenes (ImgId, ImgTipoDato, ImgIdDato, ImgIdVarianteDato, ImgTipoImagen, ImgDescripcion, ImgFechaModificacion) values (@ImgID, 1, @ImgIdDato, 1, 1, 'Principal', GETDATE());", InsertList);
+        }
+
+        /// <summary>
+        /// Función encargada de chequear que no se dupliquen valores de Guid en la tabla Imagenes.
+        /// </summary>
+        /// <returns>¿Dicha imagen está en la tabla Imagenes?</returns>
+        public Boolean CheckImgDuplicate(int ImgIdDato)
+        {
+            switch (DatabaseAccess.GetInstance.GenericFieldQuery<int>("select count(*) from Imagenes where ImgIdDato = '" + ImgIdDato + "';"))
+            { 
+                case 0:
+                    return false;
+                    break;
+                default:
+                    return true;
+                    break;
+            }
         }
 
         /// <summary>
