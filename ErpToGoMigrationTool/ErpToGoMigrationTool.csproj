@@ -75,6 +75,7 @@
     <Compile Include="DataAccess\DatabaseAccess.cs" />
     <Compile Include="DataAccess\FilesystemAccess.cs" />
     <Compile Include="DataAccess\Queries.cs" />
+    <Compile Include="Logic\ImportAndExport.cs" />
     <Compile Include="Logic\ZArticle.cs" />
     <Compile Include="Logic\ZImage.cs" />
     <Compile Include="Program.cs" />
