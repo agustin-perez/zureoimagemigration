@@ -23,10 +23,7 @@ namespace Zureo.MigrarImagenes
         /// <param name="args">No se utilizan parámetros de inicialización.</param>
         static void Main(string[] args)
         {
-            //Referencia de la clase para evitar el uso de métodos estáticos.
-            Program reference = new Program();
-
-            FilesystemAccess.GetInstance.SetExecutionPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+            FilesystemAccess.GetInstance.SetExecutionPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
             FilesystemAccess.GetInstance.CreateExportDir("C:\\Zureo Software\\Imagenes Exportadas GO\\");
 
             FilesystemAccess.GetInstance.LogToDisk("Inicio de ErpToGoMigrationTool", FilesystemAccess.Logtype.Info);
@@ -53,7 +50,7 @@ namespace Zureo.MigrarImagenes
 
                     FilesystemAccess.GetInstance.LogToDisk("Inicio de Exportación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
                     //Se utiliza reference para evitar referencias estáticas a los métodos en main.
-                    reference.Migration(Empresas[i], ArticleList);
+                    Migration(Empresas[i], ArticleList);
                     FilesystemAccess.GetInstance.LogToDisk("Fin de Exportación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
 
                     FilesystemAccess.GetInstance.LogToDisk("Inicio de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
@@ -62,7 +59,7 @@ namespace Zureo.MigrarImagenes
                         //Se utiliza reference para evitar referencias estáticas a los métodos en main.
                         if (!Queries.GetInstance.CheckImgDuplicate(articulo.artID))
                         {
-                            reference.ArticleImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
+                            ArticleImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
                         }
                         else
                         {
@@ -87,7 +84,7 @@ namespace Zureo.MigrarImagenes
         /// Función encargada de extraer todas las imágenes y cargarlas en memoria, para luego procesarlas.
         /// </summary>
         /// <param name="ArtEmpresa">Id de la empresa a realizar la extracción de imágenes.</param>
-        private void Migration(int ArtEmpresa, List<ZArticle> ArticleList)
+        private static void Migration(int ArtEmpresa, List<ZArticle> ArticleList)
         {
             string EmpPathImg = Queries.GetInstance.GetImgBasePath(ArtEmpresa);
             DataTable ArticleView = new DataTable();
@@ -126,7 +123,7 @@ namespace Zureo.MigrarImagenes
         /// </summary>
         /// <param name="articulo">Artículo a realizar la escritura.</param>
         /// <param name="savePath">Ruta a guardar la imagen en base al Guid.</param>
-        private void ArticleImport(ZArticle articulo, string savePath)
+        private static void ArticleImport(ZArticle articulo, string savePath)
         {
             try
             {

@@ -37,6 +37,7 @@ namespace Zureo.MigrarImagenes.Logic
                 if (codec.FormatID == FinalEncoder.Guid)
                 {
                     JPEGCodec = codec;
+                    break;
                 }
             }
             System.Drawing.Imaging.Encoder JPEGEncoder = System.Drawing.Imaging.Encoder.Quality;
