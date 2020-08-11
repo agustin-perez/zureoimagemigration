@@ -119,7 +119,7 @@ namespace ErpToGoMigrationTool.DataAccess
         /// <returns>¿Dicha imagen está en la tabla Imagenes?</returns>
         public Boolean CheckImgDuplicate(int ImgIdDato)
         {
-            switch (DatabaseAccess.GetInstance.GenericFieldQuery<int>("select count(*) from Imagenes where ImgIdDato = '" + ImgIdDato + "';"))
+            switch (DatabaseAccess.GetInstance.GenericFieldQuery<int>("select count(*) from Imagenes where ImgTipoDato = 1 and ImgIdDato = '" + ImgIdDato + "';"))
             { 
                 case 0:
                     return false;

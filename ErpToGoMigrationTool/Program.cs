@@ -19,7 +19,7 @@ namespace Zureo.MigrarImagenes
     /// </summary>
     class Program
     {
-        private static bool IsFenicio = false;
+        private static bool IsFenicio;
         /// <summary>
         /// Método Main del programa.
         /// </summary>
@@ -29,14 +29,17 @@ namespace Zureo.MigrarImagenes
             FilesystemAccess.GetInstance.SetExecutionPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
             FilesystemAccess.GetInstance.CreateExportDir("C:\\Zureo Software\\Imagenes Exportadas GO\\");
 
-            ParseArgs(args[0]);
+            ParseArgs(args);
 
             FilesystemAccess.GetInstance.LogToDisk("Inicio de ErpToGoMigrationTool", FilesystemAccess.Logtype.Info);
             try
             {
                 DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
                 DatabaseAccess.GetInstance.InitConnection();
-                Queries.GetInstance.CheckImagenesTable();
+                if (!IsFenicio)
+                {
+                    Queries.GetInstance.CheckImagenesTable();
+                }
             }
             catch (Exception)
             {
@@ -64,13 +67,20 @@ namespace Zureo.MigrarImagenes
                     FilesystemAccess.GetInstance.LogToDisk("Inicio de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
                     foreach (ZArticle articulo in ArticleList)
                     {
-                        if (!Queries.GetInstance.CheckImgDuplicate(articulo.artID))
+                        if (!IsFenicio)
                         {
-                            migration.ArticleImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
+                            if (!Queries.GetInstance.CheckImgDuplicate(articulo.artID))
+                            {
+                                    migration.ArticleImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
+                            }
+                            else
+                            {
+                                FilesystemAccess.GetInstance.LogToDisk("No se guardó la imagen del artículo: " + articulo.artID + " ya que la misma fue migrada anteriormente. ", FilesystemAccess.Logtype.Warning);
+                            }
                         }
                         else
                         {
-                            FilesystemAccess.GetInstance.LogToDisk("No se guardó la imagen del artículo: " + articulo.artID + " ya que la misma fue migrada anteriormente. ", FilesystemAccess.Logtype.Warning);
+                            migration.FenicioImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
                         }
                     }
                     FilesystemAccess.GetInstance.LogToDisk("Fin de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
@@ -87,25 +97,36 @@ namespace Zureo.MigrarImagenes
             Process.Start("explorer.exe", FilesystemAccess.GetInstance.GetExportPath);
         }
 
-        private static void ParseArgs(String arg)
+        /// <summary>
+        /// Subrutina encargada de parsear los argumentos de ejecución, para lidiar con el caso particular de Fenicio.
+        /// </summary>
+        /// <param name="args">Argumentos de ejecución</param>
+        private static void ParseArgs(String[] args)
         {
             try
             {
-                if (short.Parse(arg) == 2)
+                switch (short.Parse(args[0]))
                 {
-                    IsFenicio = true;
+                    case 1:
+                        break;
+                    case 2: 
+                        IsFenicio = true;
+                        FilesystemAccess.GetInstance.LogToDisk("Se exportarán las imágenes en base a la integración con Fenicio.", FilesystemAccess.Logtype.Info);
+                        break;
+                    default:
+                        throw new FormatException();
                 }
             }
-            catch (ArgumentNullException)
+            catch (IndexOutOfRangeException)
             {
-                FilesystemAccess.GetInstance.LogToDisk("No se ingresó parámetro de ejecución, se asume que no se utilizará Integración con Fenicio.", FilesystemAccess.Logtype.Error);
+                FilesystemAccess.GetInstance.LogToDisk("No se ingresó parámetro de ejecución, se asume que no se utilizará Integración con Fenicio.", FilesystemAccess.Logtype.Info);
             }
             catch (FormatException)
             {
-                FilesystemAccess.GetInstance.LogToDisk("El argumento ingresado no es válido.\nSaliendo...", FilesystemAccess.Logtype.Error);
+                FilesystemAccess.GetInstance.LogToDisk("El argumento ingresado no es válido o no es un número admitido.\nSaliendo...", FilesystemAccess.Logtype.Error);
                 Environment.Exit(0);
             }
-            finally
+            catch (Exception)
             {
                 FilesystemAccess.GetInstance.LogToDisk("El argumento ingresado es un número fuera de rango, o no es válido.\nSaliendo...", FilesystemAccess.Logtype.Error);
                 Environment.Exit(0);

@@ -46,7 +46,6 @@ namespace Zureo.MigrarImagenes.DataAccess
             }
             catch (Exception e)
             {
-               // FilesystemAccess.GetInstance.LogError("Error al conectar a la base de datos.", MethodBase.GetCurrentMethod());
                 Console.WriteLine(e.StackTrace);
                 Console.Read();
             }

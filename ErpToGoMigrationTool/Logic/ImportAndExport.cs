@@ -37,7 +37,7 @@ namespace ErpToGoMigrationTool.Logic
 
                     if (!System.IO.Path.IsPathRooted(row.Field<string>((int)Queries.ArticleColumns.ArtFoto)))
                     {
-                        imgpath = EmpPathImg + row.Field<string>((int)Queries.ArticleColumns.ArtFoto);
+                        imgpath = Path.Combine(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto));
                     }
                     ZImage newImage = new ZImage(new Bitmap(imgpath));
                     ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage));
@@ -70,16 +70,21 @@ namespace ErpToGoMigrationTool.Logic
             }
         }
 
-        private void FenicioImport(ZArticle articulo, string savePath)
+        /// <summary>
+        /// Subrutina encargada de administrar la inserción de las imágenes correspondientes al caso de Fenicio.
+        /// </summary>
+        /// <param name="articulo">Artículo a realizar la escritura.</param>
+        /// <param name="savePath">Ruta a guardar la imagen en base al ArtID.</param>
+        public void FenicioImport(ZArticle articulo, string savePath)
         {
             try
             {
                 FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artID + "-0.jpg", articulo.artImg.GetJPEGCodec, articulo.artImg.GetJPEGEncoderParams);
-                FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con el ID: " + articulo.artID+"-0.jpg", FilesystemAccess.Logtype.Info);
+                FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con ID: " + articulo.artID+"-0.jpg", FilesystemAccess.Logtype.Info);
             }
             catch (Exception)
             {
-                ///FilesystemAccess.GetInstance.LogToDisk("Error al escribir imagen a disco, perteneciente al artículo:  " + articulo.artID + " ¿La imagen es muy pesada o estará mal encodeada? ¿Guid mal generado? Prueba correr el programa nuevamente", FilesystemAccess.Logtype.Error, MethodBase.GetCurrentMethod());
+                FilesystemAccess.GetInstance.LogToDisk("Error al escribir imagen a disco, perteneciente al artículo:  " + articulo.artID + " ¿La imagen es muy pesada o estará mal encodeada? ¿Guid mal generado? Prueba correr el programa nuevamente", FilesystemAccess.Logtype.Error, MethodBase.GetCurrentMethod());
             }
         }
     }
