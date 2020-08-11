@@ -42,7 +42,7 @@ namespace ErpToGoMigrationTool.Logic
                     ZImage newImage = new ZImage(new Bitmap(imgpath));
                     ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage));
                     Console.WriteLine("Ruta de la imagen procesándose: " + imgpath);
-                    FilesystemAccess.GetInstance.LogToDisk("Se procesó correctamente la imagen con Guid: " + newImage.GetGuid + " del artículo: " + row.Field<int>((int)Queries.ArticleColumns.ArtId) + " Procesada correctamente.", FilesystemAccess.Logtype.Info);
+                    FilesystemAccess.GetInstance.LogToDisk("Se procesó correctamente la imagen con Guid: " + newImage.GetGuid + " del artículo: " + row.Field<int>((int)Queries.ArticleColumns.ArtId), FilesystemAccess.Logtype.Info);
                 }
                 catch (FileNotFoundException) { FilesystemAccess.GetInstance.LogToDisk("Error de lectura al procesar imagen del artículo: " + row.Field<string>((int)Queries.ArticleColumns.ArtId), FilesystemAccess.Logtype.Error, MethodBase.GetCurrentMethod()); }
                 //Este catch es tomado en base a un ArgumentException cuando no se puede crear el Bitmap por falta de la imagen.

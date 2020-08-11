@@ -2,13 +2,8 @@
 using ErpToGoMigrationTool.Logic;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Drawing;
-using System.IO;
 using System.Reflection;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using Zureo.MigrarImagenes.DataAccess;
 using Zureo.MigrarImagenes.Logic;
 
@@ -28,10 +23,9 @@ namespace Zureo.MigrarImagenes
         {
             FilesystemAccess.GetInstance.SetExecutionPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
             FilesystemAccess.GetInstance.CreateExportDir("C:\\Zureo Software\\Imagenes Exportadas GO\\");
-
+            
+            FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
             ParseArgs(args);
-
-            FilesystemAccess.GetInstance.LogToDisk("Inicio de ErpToGoMigrationTool", FilesystemAccess.Logtype.Info);
             try
             {
                 DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
@@ -91,9 +85,8 @@ namespace Zureo.MigrarImagenes
                 FilesystemAccess.GetInstance.LogToDisk("Error desconocido al intentar procesar los artículos de la empresa: " + LastEmpresa + " Revisar conexión con BD y permisos de ejecución. Se intentará continuar con el resto de empresas.", FilesystemAccess.Logtype.Error, MethodBase.GetCurrentMethod());
             }
 
-            FilesystemAccess.GetInstance.LogToDisk("Fin de migración a GO", FilesystemAccess.Logtype.Info);
-            Console.WriteLine("\nPresione enter para salir y abrir la carpeta con las imágenes exportadas.");
-            Console.ReadLine();
+            FilesystemAccess.GetInstance.LogToDisk("-------------- Fin de migración --------------", FilesystemAccess.Logtype.Info);
+            Console.WriteLine("\nAbriendo carpeta con las imágenes exportadas.");
             Process.Start("explorer.exe", FilesystemAccess.GetInstance.GetExportPath);
         }
 
