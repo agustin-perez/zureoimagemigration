@@ -77,18 +77,6 @@ namespace ErpToGoMigrationTool.DataAccess
 
         /// <summary>
         /// Función encargada de devolver una tabla estilo "vista" con los 
-        /// datos necesarios para poder instanciar los objetos de Article.
-        /// </summary>
-        /// <param name="ArtEmpresa">Empresa a la cual se van a extraer dichos Artículos.</param>
-        /// <returns>Tabla con todos los Artículos de dicha empresa, 
-        /// lista para instanciar los objetos de Artículo.</returns>
-        public DataTable GetArticleView()
-        {
-            return DatabaseAccess.GetInstance.TableQuery("select ArtId, ArtEmpresa, ArtFoto from Articulo where ArtFoto is not null;");
-        }
-
-        /// <summary>
-        /// Función encargada de devolver una tabla estilo "vista" con los 
         /// datos necesarios para poder instanciar los objetos de Article basados en una empresa particular.
         /// </summary>
         /// <param name="ArtEmpresa">Empresa a la cual se van a extraer dichos Artículos.</param>
@@ -122,10 +110,8 @@ namespace ErpToGoMigrationTool.DataAccess
             { 
                 case 0:
                     return false;
-                    break;
                 default:
                     return true;
-                    break;
             }
         }
 

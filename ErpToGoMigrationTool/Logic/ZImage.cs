@@ -11,9 +11,6 @@ namespace Zureo.MigrarImagenes.Logic
     {
         private Guid guidObj = System.Guid.NewGuid();
         private Bitmap Imagen;
-        private ImageFormat FinalEncoder = ImageFormat.Jpeg;
-        private EncoderParameters JPEGEncoderParams;
-        private ImageCodecInfo JPEGCodec;
 
         /// <summary>
         /// Constructor por defecto de la clase.
@@ -22,44 +19,12 @@ namespace Zureo.MigrarImagenes.Logic
         public ZImage(Bitmap Imagen)
         {
             this.Imagen = Imagen;
-            CompressionParams();
-        }
-
-        /// <summary>
-        /// Función la cual obtiene los parámetros de guardado de cualquier imagen soportada, para que la misma sea encodeada a JPEG y con una compresión del 35%.
-        /// </summary>
-        /// <param name="Imagen">Imagen a obtener los parámetros.</param>
-        private void CompressionParams()
-        {
-            ImageCodecInfo[] codecArr = ImageCodecInfo.GetImageDecoders();
-            foreach (ImageCodecInfo codec in codecArr)
-            {
-                if (codec.FormatID == FinalEncoder.Guid)
-                {
-                    JPEGCodec = codec;
-                    break;
-                }
-            }
-            System.Drawing.Imaging.Encoder JPEGEncoder = System.Drawing.Imaging.Encoder.Quality;
-            JPEGEncoderParams = new EncoderParameters(1);
-            EncoderParameter JPEGEncoderParam = new EncoderParameter(JPEGEncoder, 65L);
-            JPEGEncoderParams.Param[0] = JPEGEncoderParam;
         }
 
         /// <summary>
         /// Getter de guid.
         /// </summary>
         public Guid GetGuid { get => guidObj; }
-
-        /// <summary>
-        /// Getter de JPEGEncoderParams
-        /// </summary>
-        public EncoderParameters GetJPEGEncoderParams { get => JPEGEncoderParams; }
-
-        /// <summary>
-        /// Getter de JPEGCodec
-        /// </summary>
-        public ImageCodecInfo GetJPEGCodec { get => JPEGCodec; }
 
         /// <summary>
         /// Getter de Imagen

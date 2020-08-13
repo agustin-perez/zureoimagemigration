@@ -14,6 +14,7 @@ namespace Zureo.MigrarImagenes.DataAccess
         private static FilesystemAccess instance;
         private static string logpath;
         private static string exportPath;
+        private ImageCodecInfo codec;
 
         /// <summary>
         /// Función encargada de instanciar y devolver una única instancia Singleton de la clase.
@@ -57,9 +58,33 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// Subrutina encargada de escribir la imagen optimizada en disco.
         /// </summary>
         /// <param name="path">Ruta absoluta de la imagen a guardar.</param>
-        public void WriteJPEG(Bitmap imagen, string path, ImageCodecInfo JPEGCodec, EncoderParameters JPEGEncoderParams)
+        public void WriteJPEG(Bitmap imagen, string path)
         {
-            imagen.Save(path, JPEGCodec, JPEGEncoderParams);
+            if (codec == null)
+            {
+                GetJPEGCodec();
+            }
+            EncoderParameter JPEGEncoderParam = new EncoderParameter(Encoder.Quality, 65L);
+            EncoderParameters JPEGEncoderParams = new EncoderParameters(1);
+            JPEGEncoderParams.Param[0] = JPEGEncoderParam;
+            imagen.Save(path, codec, JPEGEncoderParams);
+        }
+
+        /// <summary>
+        /// Función encargada de obtener el códec JPEG de la clase ImageCodecInfo.
+        /// </summary>
+        private void GetJPEGCodec()
+        {
+            ImageCodecInfo[] codecArr = ImageCodecInfo.GetImageDecoders();
+
+            foreach (ImageCodecInfo codec in codecArr)
+            {
+                if (codec.FormatID == ImageFormat.Jpeg.Guid)
+                {
+                    this.codec = codec;
+                    break;
+                }
+            }
         }
 
         /// <summary>

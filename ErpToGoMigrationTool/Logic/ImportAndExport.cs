@@ -60,7 +60,7 @@ namespace ErpToGoMigrationTool.Logic
         {
             try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artImg.GetGuid + ".jpg", articulo.artImg.GetJPEGCodec, articulo.artImg.GetJPEGEncoderParams);
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artImg.GetGuid + ".jpg");
                 Queries.GetInstance.ImageInsert(articulo.artImg.GetGuid, articulo.artID);
                 FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con Guid: " + articulo.artImg.GetGuid, FilesystemAccess.Logtype.Info);
             }
@@ -79,7 +79,7 @@ namespace ErpToGoMigrationTool.Logic
         {
             try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artID + "-0.jpg", articulo.artImg.GetJPEGCodec, articulo.artImg.GetJPEGEncoderParams);
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artID + "-0.jpg");
                 FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con ID: " + articulo.artID+"-0.jpg", FilesystemAccess.Logtype.Info);
             }
             catch (Exception)

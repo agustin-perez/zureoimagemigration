@@ -23,9 +23,22 @@ namespace Zureo.MigrarImagenes
         {
             FilesystemAccess.GetInstance.SetExecutionPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
             FilesystemAccess.GetInstance.CreateExportDir("C:\\Zureo Software\\Imagenes Exportadas GO\\");
-            
-            FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
             ParseArgs(args);
+            FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
+            
+            Console.WriteLine("¿Confirma que desea continuar con la migración? (y/n)");
+            string input = Console.ReadLine().ToLower();
+            while (input != "y")
+            {
+                if (input == "n")
+                {
+                    FilesystemAccess.GetInstance.LogToDisk("Eligió no continuar, saliendo...", FilesystemAccess.Logtype.Info);
+                    Environment.Exit(0);
+                }
+                Console.WriteLine("El valor no es válido, ¿Confirma que desea continuar con la migración? (y/n)");
+                input = Console.ReadLine().ToLower();
+            }
+
             try
             {
                 DatabaseAccess.GetInstance.ConnectionString = Utils.GetConnectionString();
@@ -102,7 +115,7 @@ namespace Zureo.MigrarImagenes
                 {
                     case 1:
                         break;
-                    case 2: 
+                    case 2:
                         IsFenicio = true;
                         FilesystemAccess.GetInstance.LogToDisk("Se exportarán las imágenes en base a la integración con Fenicio.", FilesystemAccess.Logtype.Info);
                         break;
@@ -112,7 +125,8 @@ namespace Zureo.MigrarImagenes
             }
             catch (IndexOutOfRangeException)
             {
-                FilesystemAccess.GetInstance.LogToDisk("No se ingresó parámetro de ejecución, se asume que no se utilizará Integración con Fenicio.", FilesystemAccess.Logtype.Info);
+                FilesystemAccess.GetInstance.LogToDisk("No se ingresó parámetro de ejecución, no se continuará con la ejecución, saliendo...", FilesystemAccess.Logtype.Info);
+                Environment.Exit(0);
             }
             catch (FormatException)
             {

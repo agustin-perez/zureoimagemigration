@@ -1,0 +1,3 @@
+2020-08-13 02:27:17,032 [1] FATAL Error en metodo: GetConfigParameterValue, de la clase: ZUtilities -  / Exception message: Se esperaba una cadena no vacía para el parámetro 'providerInvariantName'. - InnerException:  - StackTrace: CheckArgumentLength at offset 2656610 in file:line:column <filename unknown>:0:0
+
+2020-08-13 02:27:17,122 [1] INFO  Log en metodo: ObtenerIdClienteBDActual, de la clase: ZUtilities - Hubo un error y no se pudo obtener un IdCliente, se setea -1 por defecto.
