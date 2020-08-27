@@ -15,6 +15,8 @@ namespace Zureo.MigrarImagenes.DataAccess
         private static string logpath;
         private static string exportPath;
         private ImageCodecInfo codec;
+        private bool TPVDestFolderWasChecked = false;
+        private string TPVPath;
 
         /// <summary>
         /// Función encargada de instanciar y devolver una única instancia Singleton de la clase.
@@ -51,14 +53,15 @@ namespace Zureo.MigrarImagenes.DataAccess
             {
                 Directory.CreateDirectory(path);
             }
-            exportPath = path;
         }
 
         /// <summary>
         /// Subrutina encargada de escribir la imagen optimizada en disco.
         /// </summary>
-        /// <param name="path">Ruta absoluta de la imagen a guardar.</param>
-        public void WriteJPEG(Bitmap imagen, string path)
+        /// <param name="GUID">GUID de la imagen a guardar.</param>
+        /// <param name="TPV">Boolean que determina si esa imagen existe en el directorio TPV original, para guardarla en el nuevo..</param>
+        /// <param name="FenicioID">[Sobrecarga opcional] ID de Fenicio, el cual indica que se utilizo dicha implementación.</param>
+        public void WriteJPEG(Bitmap imagen, string GUID, bool TPV, string FenicioID=null)
         {
             if (codec == null)
             {
@@ -67,7 +70,9 @@ namespace Zureo.MigrarImagenes.DataAccess
             EncoderParameter JPEGEncoderParam = new EncoderParameter(Encoder.Quality, 65L);
             EncoderParameters JPEGEncoderParams = new EncoderParameters(1);
             JPEGEncoderParams.Param[0] = JPEGEncoderParam;
-            imagen.Save(path, codec, JPEGEncoderParams);
+            imagen.Save(ImgSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
+            if(TPV)
+                imagen.Save(TPVSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
         }
 
         /// <summary>
@@ -98,15 +103,86 @@ namespace Zureo.MigrarImagenes.DataAccess
             string logformat;
             if (trace != null) 
             { 
-                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\" En: \"" + trace.ToString() + "\""+"\r\n");
-                Console.WriteLine("[" + type.ToString() + "]: \"" + msj + "\" En: \"" + trace.ToString() + "\"" + "\r\n");
+                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: " + msj + " En: " + trace.ToString() +"\r\n");
+                Console.WriteLine("[" + type.ToString() + "]: " + msj + " En: "+ trace.ToString()  + "\r\n");
             }
             else 
             { 
-                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: \"" + msj + "\""+"\r\n");
-                Console.WriteLine("[" + type.ToString() + "]: \"" + msj + "\"" + "\r\n");
+                logformat = (System.DateTime.Now + " [" + type.ToString() + "]: " + msj +"\r\n");
+                Console.WriteLine("[" + type.ToString() + "]: " + msj  + "\r\n");
             }
             System.IO.File.AppendAllText(logpath + "\\logs.txt", logformat);
+        }
+
+        /// <summary>
+        /// Función encargada de chequear al momento de guardado si la imagen existía en el directorio TPV para su correspondiente guardado.
+        /// </summary>
+        /// <param name="EmpPathImg">Ruta base de la empresa.</param>
+        /// <param name="ArtFoto">Ruta de la imagen, la cual puede o no ser absoluta.</param>
+        /// <returns>Si la imagen existe o no.</returns>
+        public bool CheckTPVImage(string EmpPathImg, string ArtFoto)
+        {
+            EmpPathImg = Path.Combine(EmpPathImg, Path.GetDirectoryName(ArtFoto));
+            Console.WriteLine(EmpPathImg);
+            TPVPath = Path.Combine(exportPath, "TPV");
+
+            if (!TPVDestFolderWasChecked && !Directory.Exists(TPVPath) && Directory.Exists(Path.Combine(EmpPathImg, "TPV")))
+            {
+                CreateExportDir(TPVPath);
+                if(Directory.Exists(TPVPath))
+                    TPVDestFolderWasChecked = true;
+            }
+            
+            if (File.Exists(Path.Combine(@EmpPathImg, "TPV", Path.GetFileName(ArtFoto))))
+                return true;
+            else
+                return false;
+        }
+
+        /// <summary>
+        /// Función encargada de manejar las rutas de imágenes dentro de la importación a memoria, antes de ser guardadas en disco.
+        /// </summary>
+        /// <param name="EmpPathImg">Ruta base de la empresa.</param>
+        /// <param name="ArtFoto">Ruta de la imagen, la cual puede o no ser absoluta.</param>
+        /// <returns>Ruta de la imagen lista para su guardado a disco.</returns>
+        public String ImagePath(string EmpPathImg, string ArtFoto)
+        {
+            //Se lanza excepción en caso de que la imagen no se encuentre en su ruta correspondiente.
+            if (ArtFoto == "")
+                throw new FileNotFoundException();
+
+            if (!System.IO.Path.IsPathRooted(ArtFoto))
+                return Path.Combine(EmpPathImg, ArtFoto);
+
+            return @ArtFoto;
+        }
+
+        /// <summary>
+        /// Función interna encargada de crear el path de guardado de cada imagen.
+        /// </summary>
+        /// <param name="GUID">GUID de la imagen a guardar.</param>
+        /// <param name="FenicioID">[Sobrecarga opcional] ID de Fenicio, el cual indica que se utilizo dicha implementación.</param>
+        /// <returns>Devuelve el path listo para escribir el Bitmap a disco.</returns>
+        private String ImgSaveDir(string GUID, string FenicioID = null)
+        {
+            if (FenicioID == null)
+                return Path.Combine(exportPath, GUID.ToString() + ".jpg");
+            else
+                return Path.Combine(exportPath, FenicioID.ToString() + "-0.jpg");
+        }
+
+        /// <summary>
+        /// Función interna encargada de preparar el directorio para TPV.
+        /// </summary>
+        /// <param name="GUID">GUID de la imagen a guardar.</param>
+        /// <param name="FenicioID">ID de Fenicio, el cual indica que se utilizo dicha implementación.</param>
+        /// <returns>Devuelve el path listo para escribir el Bitmap a disco.</returns>
+        private String TPVSaveDir(string GUID, string FenicioID = null)
+        {
+            if (FenicioID == null)
+                return Path.Combine(TPVPath, GUID.ToString() + ".jpg");
+            else
+                return Path.Combine(TPVPath, FenicioID.ToString() + "-0.jpg");
         }
 
         /// <summary>
@@ -125,8 +201,8 @@ namespace Zureo.MigrarImagenes.DataAccess
         public string SetExecutionPath { set => logpath = value; }
 
         /// <summary>
-        /// Getter de ExportPath
+        /// Propiedad de exportPath.
         /// </summary>
-        public string GetExportPath { get => exportPath; }
+        public string ExportPath { set => exportPath = value; get => exportPath; }
     }
 }

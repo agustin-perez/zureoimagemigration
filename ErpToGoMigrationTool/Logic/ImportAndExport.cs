@@ -20,6 +20,10 @@ namespace ErpToGoMigrationTool.Logic
         public void Migration(int ArtEmpresa, List<ZArticle> ArticleList)
         {
             string EmpPathImg = Queries.GetInstance.GetImgBasePath(ArtEmpresa);
+            if (EmpPathImg == "")
+            {
+                FilesystemAccess.GetInstance.LogToDisk("La empresa: " + ArtEmpresa + " No tiene ruta de imágenes seteada, esto va a dar problemas si hay imágenes para TPV.", FilesystemAccess.Logtype.Info);
+            }
             DataTable ArticleView = new DataTable();
             ArticleView = Queries.GetInstance.GetArticleEmpView(ArtEmpresa);
             foreach (DataRow row in ArticleView.Rows)
@@ -27,20 +31,12 @@ namespace ErpToGoMigrationTool.Logic
                 try
                 {
                     Console.WriteLine("\nMigrando imagen de artículo: " + row.Field<int>((int)Queries.ArticleColumns.ArtId));
-                    string imgpath = row.Field<string>((int)Queries.ArticleColumns.ArtFoto);
 
-                    if (imgpath == "")
-                    {
-                        //Se lanza excepción en caso de que la imagen no se encuentre en su ruta correspondiente.
-                        throw new FileNotFoundException();
-                    }
-
-                    if (!System.IO.Path.IsPathRooted(row.Field<string>((int)Queries.ArticleColumns.ArtFoto)))
-                    {
-                        imgpath = Path.Combine(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto));
-                    }
+                    string imgpath = FilesystemAccess.GetInstance.ImagePath(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto));
                     ZImage newImage = new ZImage(new Bitmap(imgpath));
-                    ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage));
+
+                    ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage, FilesystemAccess.GetInstance.CheckTPVImage(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto))));
+
                     Console.WriteLine("Ruta de la imagen procesándose: " + imgpath);
                     FilesystemAccess.GetInstance.LogToDisk("Se procesó correctamente la imagen con Guid: " + newImage.GetGuid + " del artículo: " + row.Field<int>((int)Queries.ArticleColumns.ArtId), FilesystemAccess.Logtype.Info);
                 }
@@ -55,12 +51,11 @@ namespace ErpToGoMigrationTool.Logic
         /// Subrutina encargada de derivar cada Artículo instanciado a la clase necesaria para su escritura en disco y en BD.
         /// </summary>
         /// <param name="articulo">Artículo a realizar la escritura.</param>
-        /// <param name="savePath">Ruta a guardar la imagen en base al Guid.</param>
-        public void ArticleImport(ZArticle articulo, string savePath)
+        public void ArticleImport(ZArticle articulo)
         {
             try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artImg.GetGuid + ".jpg");
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, articulo.artImg.GetGuid.ToString(), articulo.getTPV);
                 Queries.GetInstance.ImageInsert(articulo.artImg.GetGuid, articulo.artID);
                 FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con Guid: " + articulo.artImg.GetGuid, FilesystemAccess.Logtype.Info);
             }
@@ -75,12 +70,12 @@ namespace ErpToGoMigrationTool.Logic
         /// </summary>
         /// <param name="articulo">Artículo a realizar la escritura.</param>
         /// <param name="savePath">Ruta a guardar la imagen en base al ArtID.</param>
-        public void FenicioImport(ZArticle articulo, string savePath)
+        public void FenicioImport(ZArticle articulo)
         {
-            try
+           try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, savePath + articulo.artID + "-0.jpg");
-                FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con ID: " + articulo.artID+"-0.jpg", FilesystemAccess.Logtype.Info);
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, articulo.artImg.GetGuid.ToString(), articulo.getTPV, articulo.artID.ToString());
+                FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con ID: " + articulo.artID + "-0.jpg", FilesystemAccess.Logtype.Info);
             }
             catch (Exception)
             {

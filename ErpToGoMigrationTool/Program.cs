@@ -22,7 +22,8 @@ namespace Zureo.MigrarImagenes
         static void Main(string[] args)
         {
             FilesystemAccess.GetInstance.SetExecutionPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
-            FilesystemAccess.GetInstance.CreateExportDir("C:\\Zureo Software\\Imagenes Exportadas GO\\");
+            FilesystemAccess.GetInstance.ExportPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
+            FilesystemAccess.GetInstance.CreateExportDir(FilesystemAccess.GetInstance.ExportPath);
             ParseArgs(args);
             FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
             
@@ -78,7 +79,7 @@ namespace Zureo.MigrarImagenes
                         {
                             if (!Queries.GetInstance.CheckImgDuplicate(articulo.artID))
                             {
-                                    migration.ArticleImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
+                                    migration.ArticleImport(articulo);
                             }
                             else
                             {
@@ -87,7 +88,7 @@ namespace Zureo.MigrarImagenes
                         }
                         else
                         {
-                            migration.FenicioImport(articulo, FilesystemAccess.GetInstance.GetExportPath);
+                            migration.FenicioImport(articulo);
                         }
                     }
                     FilesystemAccess.GetInstance.LogToDisk("Fin de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
@@ -100,7 +101,7 @@ namespace Zureo.MigrarImagenes
 
             FilesystemAccess.GetInstance.LogToDisk("-------------- Fin de migración --------------", FilesystemAccess.Logtype.Info);
             Console.WriteLine("\nAbriendo carpeta con las imágenes exportadas.");
-            Process.Start("explorer.exe", FilesystemAccess.GetInstance.GetExportPath);
+            Process.Start("explorer.exe", FilesystemAccess.GetInstance.ExportPath);
         }
 
         /// <summary>
