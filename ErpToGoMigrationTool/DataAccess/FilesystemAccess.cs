@@ -122,17 +122,16 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// <returns>Si la imagen existe o no.</returns>
         public bool CheckTPVImage(string EmpPathImg, string ArtFoto)
         {
-            EmpPathImg = Path.Combine(EmpPathImg, Path.GetDirectoryName(ArtFoto));
-            Console.WriteLine(EmpPathImg);
+            string checkImg = Path.Combine(EmpPathImg, Path.GetDirectoryName(ArtFoto));
             TPVPath = Path.Combine(exportPath, "TPV");
 
-            if (!TPVDestFolderWasChecked && !Directory.Exists(TPVPath) && Directory.Exists(Path.Combine(EmpPathImg, "TPV")))
+            if (!TPVDestFolderWasChecked && !Directory.Exists(TPVPath) && Directory.Exists(Path.Combine(@checkImg, "TPV")))
             {
                 CreateExportDir(TPVPath);
                 if(Directory.Exists(TPVPath))
                     TPVDestFolderWasChecked = true;
             }
-            
+
             if (File.Exists(Path.Combine(@EmpPathImg, "TPV", Path.GetFileName(ArtFoto))))
                 return true;
             else

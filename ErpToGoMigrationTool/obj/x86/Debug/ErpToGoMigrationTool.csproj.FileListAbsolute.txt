@@ -1,8 +1,0 @@
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Debug\ErpToGoMigrationTool.exe
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Debug\ErpToGoMigrationTool.pdb
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\bin\x86\Debug\ZureoUtilidades.dll
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Debug\ErpToGoMigrationTool.csproj.CoreCompileInputs.cache
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Debug\ErpToGoMigrationTool.csproj.CopyComplete
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Debug\ErpToGoMigrationTool.exe
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Debug\ErpToGoMigrationTool.pdb
-C:\Users\rpere\OneDrive\Escritorio\zureoimagemigration\ErpToGoMigrationTool\obj\x86\Debug\ErpToGoMigrationTool.csprojAssemblyReference.cache
