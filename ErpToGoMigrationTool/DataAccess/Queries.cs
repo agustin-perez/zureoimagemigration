@@ -97,7 +97,7 @@ namespace ErpToGoMigrationTool.DataAccess
             List<SqlParameter> InsertList = new List<SqlParameter>();
             InsertList.Add(new SqlParameter("@ImgID", ImgID));
             InsertList.Add(new SqlParameter("@ImgIdDato", ImgIdDato));
-            DatabaseAccess.GetInstance.InsertByParams("insert into Imagenes (ImgId, ImgTipoDato, ImgIdDato, ImgIdVarianteDato, ImgTipoImagen, ImgDescripcion, ImgFechaModificacion) values (@ImgID, 1, @ImgIdDato, 1, 1, 'Principal', GETDATE());", InsertList);
+            DatabaseAccess.GetInstance.InsertByParams("insert into Imagenes (ImgId, ImgTipoDato, ImgIdDato, ImgIdVarianteDato, ImgTipoImagen, ImgDescripcion, ImgFechaModificacion) values (@ImgID, 1, @ImgIdDato, 0, 1, 'Principal', GETDATE());", InsertList);
         }
 
         /// <summary>
