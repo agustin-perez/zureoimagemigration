@@ -13,6 +13,8 @@ namespace ErpToGoMigrationTool.Logic
 {
     class ImportAndExport
     {
+
+
         /// <summary>
         /// Función encargada de extraer todas las imágenes y cargarlas en memoria, para luego procesarlas.
         /// </summary>

@@ -26,18 +26,17 @@ namespace Zureo.MigrarImagenes
             FilesystemAccess.GetInstance.CreateExportDir(FilesystemAccess.GetInstance.ExportPath);
             ParseArgs(args);
             FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
-            
-            Console.WriteLine("¿Confirma que desea continuar con la migración? (y/n)");
-            string input = Console.ReadLine().ToLower();
-            while (input != "y")
+
+            if(ConsoleQuery("¿Quiere optimizar las imágenes al momento de exportarlas?"))
             {
-                if (input == "n")
-                {
-                    FilesystemAccess.GetInstance.LogToDisk("Eligió no continuar, saliendo...", FilesystemAccess.Logtype.Info);
-                    Environment.Exit(0);
-                }
-                Console.WriteLine("El valor no es válido, ¿Confirma que desea continuar con la migración? (y/n)");
-                input = Console.ReadLine().ToLower();
+                FilesystemAccess.GetInstance.LogToDisk("Se eligió optimizar las imágenes.", FilesystemAccess.Logtype.Info);
+                FilesystemAccess.GetInstance.optmizeImages = true;
+            }
+
+            if (!ConsoleQuery("¿Confirma que desea continuar con la migración?"))
+            {
+                FilesystemAccess.GetInstance.LogToDisk("Eligió no continuar, saliendo...", FilesystemAccess.Logtype.Info);
+                Environment.Exit(0);
             }
 
             try
@@ -102,6 +101,27 @@ namespace Zureo.MigrarImagenes
             FilesystemAccess.GetInstance.LogToDisk("-------------- Fin de migración --------------", FilesystemAccess.Logtype.Info);
             Console.WriteLine("\nAbriendo carpeta con las imágenes exportadas.");
             Process.Start("explorer.exe", FilesystemAccess.GetInstance.ExportPath);
+        }
+
+        /// <summary>
+        /// Función encargada de realizar preguntas en consola.
+        /// </summary>
+        /// <param name="message">Mensaje a preguntar.</param>
+        /// <returns>Respuesta en boolean.</returns>
+        private static bool ConsoleQuery(string message)
+        {
+            Console.WriteLine(message + "(Y/n)");
+            string input = Console.ReadLine().ToLower();
+            while (input != "y")
+            {
+                if (input == "n")
+                {
+                    return false;
+                }
+                Console.WriteLine("Opción inválida. " + message + "(Y/n)");
+                input = Console.ReadLine().ToLower();
+            }
+            return true;
         }
 
         /// <summary>

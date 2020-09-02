@@ -17,6 +17,7 @@ namespace Zureo.MigrarImagenes.DataAccess
         private ImageCodecInfo codec;
         private bool TPVDestFolderWasChecked = false;
         private string TPVPath;
+        private bool OptimizeImages = false;
 
         /// <summary>
         /// Función encargada de instanciar y devolver una única instancia Singleton de la clase.
@@ -61,13 +62,23 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// <param name="GUID">GUID de la imagen a guardar.</param>
         /// <param name="TPV">Boolean que determina si esa imagen existe en el directorio TPV original, para guardarla en el nuevo..</param>
         /// <param name="FenicioID">[Sobrecarga opcional] ID de Fenicio, el cual indica que se utilizo dicha implementación.</param>
-        public void WriteJPEG(Bitmap imagen, string GUID, bool TPV, string FenicioID=null)
+        public void WriteJPEG(Bitmap imagen, string GUID, bool TPV, string FenicioID = null)
         {
             if (codec == null)
             {
                 GetJPEGCodec();
             }
-            EncoderParameter JPEGEncoderParam = new EncoderParameter(Encoder.Quality, 65L);
+
+            EncoderParameter JPEGEncoderParam;
+            if (optmizeImages)
+            {
+                JPEGEncoderParam = new EncoderParameter(Encoder.Quality, 65L);
+            }
+            else
+            {
+                JPEGEncoderParam = new EncoderParameter(Encoder.Quality, 100L);
+            }
+            
             EncoderParameters JPEGEncoderParams = new EncoderParameters(1);
             JPEGEncoderParams.Param[0] = JPEGEncoderParam;
             imagen.Save(ImgSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
@@ -203,5 +214,11 @@ namespace Zureo.MigrarImagenes.DataAccess
         /// Propiedad de exportPath.
         /// </summary>
         public string ExportPath { set => exportPath = value; get => exportPath; }
+
+
+        /// <summary>
+        /// Propiedad de OptimizeImages
+        /// </summary>
+        public bool optmizeImages { set => OptimizeImages = value; get => OptimizeImages; }
     }
 }
