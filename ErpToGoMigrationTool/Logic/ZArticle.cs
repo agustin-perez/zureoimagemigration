@@ -10,7 +10,7 @@ namespace Zureo.MigrarImagenes.Logic
         private int ArtID;
         private Int16 ArtEmpresa;
         private ZImage ArtImg;
-        private bool TPV;
+        private ZImage TPVArtImg;
 
         /// <summary>
         /// Constructor por defecto de la clase ZArticle.
@@ -18,12 +18,12 @@ namespace Zureo.MigrarImagenes.Logic
         /// <param name="ArtID">ID de artículo.</param>
         /// <param name="ArtEmpresa">Empresa a la que pertenece el artículo.</param>
         /// <param name="ArtImg">Imagen del artículo en cuestión.</param>
-        public ZArticle(int ArtID, Int16 ArtEmpresa, ZImage ArtImg, bool TPV)
+        public ZArticle(int ArtID, Int16 ArtEmpresa, ZImage ArtImg, ZImage TPVArtImg)
         {
             this.ArtID = ArtID;
             this.ArtEmpresa = ArtEmpresa;
             this.ArtImg = ArtImg;
-            this.TPV = TPV;
+            this.TPVArtImg = TPVArtImg;
         }
 
         /// <summary>
@@ -42,8 +42,8 @@ namespace Zureo.MigrarImagenes.Logic
         internal ZImage artImg { get => ArtImg; }
 
         /// <summary>
-        /// Getter de TPV.
+        /// Getter de TPVArtImg.
         /// </summary>
-        public bool getTPV { get => TPV; }
+        internal ZImage TPVartImg { get => TPVArtImg; }
     }
 }

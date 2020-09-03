@@ -57,12 +57,13 @@ namespace Zureo.MigrarImagenes.DataAccess
         }
 
         /// <summary>
-        /// Subrutina encargada de escribir la imagen optimizada en disco.
+        /// Subrutina encargada de escribir imágenes a disco.
         /// </summary>
-        /// <param name="GUID">GUID de la imagen a guardar.</param>
-        /// <param name="TPV">Boolean que determina si esa imagen existe en el directorio TPV original, para guardarla en el nuevo..</param>
-        /// <param name="FenicioID">[Sobrecarga opcional] ID de Fenicio, el cual indica que se utilizo dicha implementación.</param>
-        public void WriteJPEG(Bitmap imagen, string GUID, bool TPV, string FenicioID = null)
+        /// <param name="Image">Imagen a escribir.</param>
+        /// <param name="TPVImage">Imagen de TPV a escribir (si es que existe).</param>
+        /// <param name="GUID">GUID de la imagen a guardar</param>
+        /// <param name="FenicioID">ID de fenicio.</param>
+        public void WriteJPEG(Bitmap Image, Bitmap TPVImage, string GUID, string FenicioID = null)
         {
             if (codec == null)
             {
@@ -81,9 +82,9 @@ namespace Zureo.MigrarImagenes.DataAccess
             
             EncoderParameters JPEGEncoderParams = new EncoderParameters(1);
             JPEGEncoderParams.Param[0] = JPEGEncoderParam;
-            imagen.Save(ImgSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
-            if(TPV)
-                imagen.Save(TPVSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
+            Image.Save(ImgSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
+            if(TPVImage != null)
+                TPVImage.Save(TPVSaveDir(GUID, FenicioID), codec, JPEGEncoderParams);
         }
 
         /// <summary>
@@ -147,6 +148,17 @@ namespace Zureo.MigrarImagenes.DataAccess
                 return true;
             else
                 return false;
+        }
+
+        /// <summary>
+        /// Función encargada de traer la imagen correspondiente a ruta TPV.
+        /// </summary>
+        /// <param name="EmpPathImg">Ruta base de la empresa.</param>
+        /// <param name="ArtFoto">Ruta de la imagen, la cual puede o no ser absoluta.</param>
+        /// <returns>Ruta de la imagen.</returns>
+        public string GetTPVImage(string EmpPathImg, string ArtFoto)
+        {
+            return Path.Combine(@EmpPathImg, "TPV", Path.GetFileName(ArtFoto));
         }
 
         /// <summary>

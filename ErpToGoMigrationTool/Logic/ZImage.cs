@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 
 namespace Zureo.MigrarImagenes.Logic
 {
@@ -10,15 +9,15 @@ namespace Zureo.MigrarImagenes.Logic
     class ZImage
     {
         private Guid guidObj = System.Guid.NewGuid();
-        private Bitmap Imagen;
+        private Bitmap Image;
 
         /// <summary>
         /// Constructor por defecto de la clase.
         /// </summary>
         /// <param name="Imagen">Imagen correspondiente a la instancia del objeto.</param>
-        public ZImage(Bitmap Imagen)
+        public ZImage(Bitmap Image)
         {
-            this.Imagen = Imagen;
+            this.Image = Image;
         }
 
         /// <summary>
@@ -27,8 +26,8 @@ namespace Zureo.MigrarImagenes.Logic
         public Guid GetGuid { get => guidObj; }
 
         /// <summary>
-        /// Getter de Imagen
+        /// Getter de Image
         /// </summary>
-        public Bitmap GetImagen { get => Imagen; }
+        public Bitmap GetImage { get => Image; }
     }
 }

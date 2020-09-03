@@ -37,7 +37,16 @@ namespace ErpToGoMigrationTool.Logic
                     string imgpath = FilesystemAccess.GetInstance.ImagePath(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto));
                     ZImage newImage = new ZImage(new Bitmap(imgpath));
 
-                    ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage, FilesystemAccess.GetInstance.CheckTPVImage(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto))));
+                    if (FilesystemAccess.GetInstance.CheckTPVImage(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto)))
+                    {
+                        ZImage newTPVImage = new ZImage(new Bitmap(FilesystemAccess.GetInstance.GetTPVImage(EmpPathImg, row.Field<string>((int)Queries.ArticleColumns.ArtFoto))));
+                        ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage, newTPVImage));
+                    }
+                    else
+                    {
+                        ZImage nullImg = new ZImage(null);
+                        ArticleList.Add(new ZArticle(row.Field<int>((int)Queries.ArticleColumns.ArtId), row.Field<Int16>((int)Queries.ArticleColumns.ArtEmpresa), newImage, nullImg));
+                    }
 
                     Console.WriteLine("Ruta de la imagen procesándose: " + imgpath);
                     FilesystemAccess.GetInstance.LogToDisk("Se procesó correctamente la imagen con Guid: " + newImage.GetGuid + " del artículo: " + row.Field<int>((int)Queries.ArticleColumns.ArtId), FilesystemAccess.Logtype.Info);
@@ -57,7 +66,7 @@ namespace ErpToGoMigrationTool.Logic
         {
             try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, articulo.artImg.GetGuid.ToString(), articulo.getTPV);
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImage, articulo.TPVartImg.GetImage, articulo.artImg.GetGuid.ToString());
                 Queries.GetInstance.ImageInsert(articulo.artImg.GetGuid, articulo.artID);
                 FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con Guid: " + articulo.artImg.GetGuid, FilesystemAccess.Logtype.Info);
             }
@@ -76,7 +85,7 @@ namespace ErpToGoMigrationTool.Logic
         {
            try
             {
-                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImagen, articulo.artImg.GetGuid.ToString(), articulo.getTPV, articulo.artID.ToString());
+                FilesystemAccess.GetInstance.WriteJPEG(articulo.artImg.GetImage, articulo.TPVartImg.GetImage, articulo.artImg.GetGuid.ToString(), articulo.artID.ToString());
                 FilesystemAccess.GetInstance.LogToDisk("Se ha migrado correctamente la imagen con ID: " + articulo.artID + "-0.jpg", FilesystemAccess.Logtype.Info);
             }
             catch (Exception)
