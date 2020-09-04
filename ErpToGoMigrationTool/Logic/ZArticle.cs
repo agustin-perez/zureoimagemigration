@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zureo.MigrarImagenes.Logic
+namespace ErpToGoMigrationTool.Logic
 {
     /// <summary>
     /// Clase encargada de manejar lógicamente un artículo de Zureo.

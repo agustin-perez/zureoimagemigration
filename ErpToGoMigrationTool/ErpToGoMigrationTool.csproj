@@ -45,14 +45,14 @@
     <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Zureo.MigrarImagenes.Program</StartupObject>
+    <StartupObject>ErpToGoMigrationTool.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>imgUpload.ico</ApplicationIcon>
@@ -75,7 +75,8 @@
     <Compile Include="DataAccess\DatabaseAccess.cs" />
     <Compile Include="DataAccess\FilesystemAccess.cs" />
     <Compile Include="DataAccess\Queries.cs" />
-    <Compile Include="Logic\ImportAndExport.cs" />
+    <Compile Include="Logic\Import.cs" />
+    <Compile Include="Logic\Migration.cs" />
     <Compile Include="Logic\ZArticle.cs" />
     <Compile Include="Logic\ZImage.cs" />
     <Compile Include="Program.cs" />

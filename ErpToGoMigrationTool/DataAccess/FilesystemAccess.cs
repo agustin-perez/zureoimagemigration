@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 
-namespace Zureo.MigrarImagenes.DataAccess
+namespace ErpToGoMigrationTool.DataAccess
 {
     /// <summary>
     /// Clase encargada de la comunicación y conexión hacia el sistema de archivos.

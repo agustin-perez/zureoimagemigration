@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Zureo.MigrarImagenes.Logic
+namespace ErpToGoMigrationTool.Logic
 {
     /// <summary>
     /// Clase encargada de manejar una imagen dada, correspondiente a un ZArticle.

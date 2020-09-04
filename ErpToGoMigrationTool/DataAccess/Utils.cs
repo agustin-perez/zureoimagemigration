@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Zureo.MigrarImagenes
+namespace ErpToGoMigrationTool.DataAccess
 {
     public static class Utils
     {

@@ -1,13 +1,10 @@
 ﻿using ErpToGoMigrationTool.DataAccess;
 using ErpToGoMigrationTool.Logic;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using Zureo.MigrarImagenes.DataAccess;
-using Zureo.MigrarImagenes.Logic;
 
-namespace Zureo.MigrarImagenes
+namespace ErpToGoMigrationTool
 {
     /// <summary>
     /// Clase principal del programa.
@@ -25,6 +22,8 @@ namespace Zureo.MigrarImagenes
             FilesystemAccess.GetInstance.ExportPath = "C:\\Zureo Software\\Imagenes Exportadas GO\\";
             FilesystemAccess.GetInstance.CreateExportDir(FilesystemAccess.GetInstance.ExportPath);
             ParseArgs(args);
+            
+            //INPUT Y LOGS
             FilesystemAccess.GetInstance.LogToDisk("-------------- Inicio de ErpToGoMigrationTool -------------- ", FilesystemAccess.Logtype.Info);
 
             if(ConsoleQuery("¿Quiere optimizar las imágenes al momento de exportarlas?"))
@@ -38,6 +37,7 @@ namespace Zureo.MigrarImagenes
                 FilesystemAccess.GetInstance.LogToDisk("Eligió no continuar, saliendo...", FilesystemAccess.Logtype.Info);
                 Environment.Exit(0);
             }
+            //FIN INPUT Y LOGS
 
             try
             {
@@ -61,36 +61,10 @@ namespace Zureo.MigrarImagenes
             {
                 for (int i = 0; i < Empresas.Length; i++)
                 {
-                    ImportAndExport migration = new ImportAndExport();
-
                     LastEmpresa = Empresas[i];
-                    List<ZArticle> ArticleList = new List<ZArticle>();
-
-                    FilesystemAccess.GetInstance.LogToDisk("Inicio de Exportación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
-
-                    migration.Migration(Empresas[i], ArticleList);
-                    FilesystemAccess.GetInstance.LogToDisk("Fin de Exportación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
-
-                    FilesystemAccess.GetInstance.LogToDisk("Inicio de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
-                    foreach (ZArticle articulo in ArticleList)
-                    {
-                        if (!IsFenicio)
-                        {
-                            if (!Queries.GetInstance.CheckImgDuplicate(articulo.artID))
-                            {
-                                    migration.ArticleImport(articulo);
-                            }
-                            else
-                            {
-                                FilesystemAccess.GetInstance.LogToDisk("No se guardó la imagen del artículo: " + articulo.artID + " ya que la misma fue migrada anteriormente. ", FilesystemAccess.Logtype.Warning);
-                            }
-                        }
-                        else
-                        {
-                            migration.FenicioImport(articulo);
-                        }
-                    }
-                    FilesystemAccess.GetInstance.LogToDisk("Fin de Importación, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
+                    FilesystemAccess.GetInstance.LogToDisk("Inicio de migración, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
+                    Migration migration = new Migration(Empresas[i], IsFenicio);
+                    FilesystemAccess.GetInstance.LogToDisk("Fin de migración, empresa: " + Empresas[i], FilesystemAccess.Logtype.Info);
                 }
             }
             catch (Exception)
@@ -99,6 +73,7 @@ namespace Zureo.MigrarImagenes
             }
 
             FilesystemAccess.GetInstance.LogToDisk("-------------- Fin de migración --------------", FilesystemAccess.Logtype.Info);
+            
             Console.WriteLine("\nAbriendo carpeta con las imágenes exportadas.");
             Process.Start("explorer.exe", FilesystemAccess.GetInstance.ExportPath);
         }

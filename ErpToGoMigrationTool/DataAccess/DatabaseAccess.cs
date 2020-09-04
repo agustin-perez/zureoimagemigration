@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-namespace Zureo.MigrarImagenes.DataAccess
+namespace ErpToGoMigrationTool.DataAccess
 {
     /// <summary>
     /// Clase encargada de la comunicación y conexión hacia la BD.
